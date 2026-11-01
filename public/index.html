@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#24251f">
+  <title>잠깐 쉬어가요</title>
+  <meta name="description" content="말없이 같이 앉아 있다 가는 온라인 공간.">
+  <link rel="stylesheet" href="/style.css">
+  <script type="importmap">
+    { "imports": { "three": "/vendor/three/build/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="view" aria-label="3D 공간"></canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <!-- 입장 화면 -->
+  <section id="gate" class="gate" aria-labelledby="gate-title">
+    <div class="gate-card">
+      <h1 id="gate-title">…</h1>
+      <p id="gate-tagline" class="gate-tagline"></p>
+      <label class="field">
+        <span>이름</span>
+        <input id="gate-name" maxlength="12" autocomplete="off">
+      </label>
+      <button id="gate-enter" class="primary" disabled>불러오는 중</button>
+      <p class="gate-hint">바닥 클릭으로 걷기 · 드래그로 둘러보기 · 휠로 확대/축소</p>
+      <nav id="gate-places" class="gate-places" aria-label="다른 곳"></nav>
+    </div>
+  </section>
+
+  <!-- 들어온 뒤 화면 -->
+  <header class="hud-top" hidden>
+    <button id="room-btn" class="pill" aria-haspopup="dialog">
+      <b id="place-name">…</b><small><span id="room-no">—</span>번 방</small>
+    </button>
+    <div class="pill tools">
+      <button id="people-btn" class="tool" aria-haspopup="dialog" aria-label="같이 있는 사람 보기">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.3c3 .2 5.5 2.6 5.5 5.7"/></svg>
+        <span id="people-count">—</span>
+      </button>
+      <button id="sound-btn" class="tool" aria-pressed="false" aria-label="소리 켜기">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="sound-wave" d="M16 9c1.5 1.5 1.5 4.5 0 6M18.5 6.5c3 3 3 8 0 11"/></svg>
+      </button>
+    </div>
+  </header>
+  <p id="hint" class="hint" hidden>바닥 클릭 · 드래그로 둘러보기 · 휠로 확대/축소</p>
+  <p id="toast" class="toast" role="status" aria-live="polite"></p>
+  <nav id="actions" class="hud-bottom" aria-label="할 수 있는 것" hidden></nav>
+
+  <dialog id="people-dlg" aria-labelledby="people-title">
+    <header><h2 id="people-title">같이 있는 사람</h2><button class="tool close" aria-label="닫기">×</button></header>
+    <ul id="people-list"></ul>
+  </dialog>
+  <dialog id="room-dlg" aria-labelledby="room-title">
+    <header><h2 id="room-title">방 옮기기</h2><button class="tool close" aria-label="닫기">×</button></header>
+    <p class="muted">방마다 들어올 수 있는 인원이 정해져 있습니다.</p>
+    <ul id="room-list"></ul>
+  </dialog>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

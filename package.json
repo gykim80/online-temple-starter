@@ -1,0 +1,23 @@
+{
+  "name": "online-temple-starter",
+  "version": "0.1.0",
+  "description": "여러 사람이 함께 들어와 쉬어 가는 3D 온라인 공간(절·성당·해변) 스타터",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test test/*.test.js",
+    "e2e": "node test/e2e/run.mjs"
+  },
+  "dependencies": {
+    "three": "^0.187.0",
+    "ws": "^8.22.1"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

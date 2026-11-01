@@ -1,0 +1,4 @@
+node_modules/
+data/*.json
+test/e2e/out/
+.DS_Store
