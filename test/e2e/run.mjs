@@ -64,6 +64,14 @@ try {
   const rooms = await (await fetch(`${BASE}/api/rooms?place=temple`)).json();
   check('방 목록 API', rooms.rooms.length === 2 && rooms.rooms[0].count === 3, JSON.stringify(rooms.rooms));
 
+  // 4-1. 방 옮기기: 예전 방에 내 캐릭터가 남지 않고, 연결이 하나만 생긴다
+  await d.page.click('#room-btn');
+  await d.page.click('#room-list [data-room="3"]');
+  await d.page.waitForFunction(() => document.querySelector('#room-no').textContent === '3');
+  await wait(2500); // 예전 소켓이 늦게 닫혀도 다시 붙지 않는지 기다려 본다
+  const moved = await (await fetch(`${BASE}/api/rooms?place=temple`)).json();
+  check('방을 옮기면 예전 방에서 빠지고 한 번만 들어간다', JSON.stringify(moved.rooms) === JSON.stringify([{ room: 1, count: 3 }, { room: 3, count: 1 }]), JSON.stringify(moved.rooms));
+
   // 5. 나가면 상대 화면에서 사라진다
   await c.page.close(); await d.page.close();
   await b.page.close();

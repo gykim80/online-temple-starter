@@ -32,20 +32,41 @@ npm start            # http://localhost:8787
 
 ```
 server/
-  index.js        정적 파일 + WebSocket(/ws) + /api/rooms
-  hub.js          방 배정, 메시지 검사, 0.1초마다 움직임 모아 보내기, 동작 수 세기
+  index.js        시작과 종료 (환경 변수 읽기 → 서버 열기 → 끌 때 동작 수 저장)
+  app.js          HTTP 경로(/healthz, /api/rooms, 정적 파일)와 WebSocket(/ws)을 Hub 에 잇기
+  hub.js          방 배정, 메시지 처리, 0.1초마다 움직임 모아 보내기
+  static.js       정적 파일 (ETag 캐시, gzip 압축, 폴더 밖 접근 막기)
+  stats.js        장소별 동작 수 세기와 파일 저장 (임시 파일에 쓰고 이름 바꾸기)
+  rate-limit.js   1초 단위 메시지 수 제한
+  config.js       환경 변수 검사
 public/
   index.html      입장 화면, 상단·하단 버튼, 대화상자
-  js/main.js      내 캐릭터 조작, 다른 사람 그리기, 버튼·키보드
-  js/world.js     렌더러, 낮·밤, 카메라 조작, 충돌
-  js/avatar.js    도형 캐릭터와 자세(걷기·꿇어앉기·앉기·절·합장)
-  js/net.js       서버 연결, 끊기면 다시 붙기
-  js/sound.js     소리 합성
+  shared/
+    protocol.js   서버와 브라우저가 같이 쓰는 약속 (자세 이름, 한계값, 이름·색 검사)
+  js/
+    main.js       아래 모듈들을 잇는 곳
+    player.js     내 캐릭터 (클릭·키보드 이동, 켜고 끄는 동작)
+    crowd.js      다른 사람들과 늘 있는 NPC (부드럽게 따라가기, 몸짓)
+    net.js        서버 연결, 끊기면 다시 붙기, 움직임 묶어 보내기
+    input.js      키보드
+    avatar.js     도형 캐릭터와 자세. 모든 캐릭터가 도형·재질을 나눠 씀
+    sound.js      소리 합성
+    world.js      렌더러·조명·카메라를 만들고 장소를 지음
+    world/        daylight.js(낮·밤) · controls.js(드래그·확대·클릭) · collision.js(부딪힘)
+    ui/           hud.js(버튼·알림·대화상자) · labels.js(이름표) · dom.js
   places/         장소 설정 (temple.js · cathedral.js · beach.js · index.js · kit.js)
 test/
-  hub.test.js     서버 로직 단위 테스트 (npm test)
-  e2e/run.mjs     브라우저 4개로 접속·이동·동작·방 나누기 확인 (npm run e2e)
+  *.test.js       서버·공통 모듈 단위 테스트 (npm test)
+  e2e/run.mjs     브라우저 여러 개로 접속·이동·동작·방 나누기·방 옮기기 확인 (npm run e2e)
 ```
+
+| 명령 | 하는 일 |
+|---|---|
+| `npm start` | 서버 실행 |
+| `npm run dev` | 파일이 바뀌면 서버 다시 시작 |
+| `npm test` | 단위 테스트 |
+| `npm run lint` | 코드 검사 |
+| `npm run e2e` | 브라우저 테스트, 화면은 `test/e2e/out/` |
 
 ## 주고받는 메시지
 
@@ -59,7 +80,7 @@ test/
 | 서버 → 접속 | `moves` | 0.1초 동안 움직인 사람들 `[id, x, z, yaw, pose]` |
 | 서버 → 접속 | `act` | 누가 무슨 동작을 했는지와 합계 |
 
-서버는 좌표를 ±90m 로 자르고, 자세 이름과 동작 이름을 검사하고, 이름에서 태그 문자를 지웁니다.
+한계값은 `public/shared/protocol.js` 한 곳에 있습니다. 서버는 좌표를 ±90m 로 자르고, 자세 이름과 동작 이름을 검사하고, 이름에서 태그 문자를 지웁니다.
 1초에 40개 넘는 메시지는 버리고 200개를 넘기면 연결을 끊습니다.
 
 ## 내 장소 만들기
@@ -75,6 +96,7 @@ Node 20 이상이 돌아가는 곳이면 어디든 됩니다. WebSocket 을 지�
 |---|---|---|
 | `PORT` | 8787 | 서버 포트 |
 | `ROOM_CAPACITY` | 50 | 방 하나 정원 |
+| `MAX_ROOMS` | 100 | 장소마다 열 수 있는 방 수 |
 | `STATS_FILE` | data/stats.json | 동작 수를 저장할 파일 |
 
 ## 참고한 곳

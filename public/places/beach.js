@@ -34,7 +34,7 @@ export default {
     // 바다: 촘촘한 판을 깔고 tick 에서 높이를 흔든다
     const seaGeo = new THREE.PlaneGeometry(400, 200, 100, 50);
     seaGeo.rotateX(-Math.PI / 2);
-    const sea = k.add(seaGeo, k.mat('#2b7d98', { roughness: 0.25, metalness: 0.1, flatShading: true, transparent: true, opacity: 0.92 }), 0, 0.15, -108, { shadow: false });
+    k.add(seaGeo, k.mat('#2b7d98', { roughness: 0.25, metalness: 0.1, flatShading: true, transparent: true, opacity: 0.92 }), 0, 0.15, -108, { shadow: false });
     const base = seaGeo.attributes.position.array.slice();
     const foam = k.add(new THREE.PlaneGeometry(400, 1.6), new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.5 }), 0, 0.2, -8, { rx: -Math.PI / 2, shadow: false });
     // 해
@@ -78,8 +78,7 @@ export default {
           const x = base[i * 3], z = base[i * 3 + 2];
           pos.array[i * 3 + 1] = Math.sin(x * 0.08 + t * 0.9) * 0.25 + Math.sin(z * 0.12 + t * 1.3) * 0.2;
         }
-        pos.needsUpdate = true;
-        seaGeo.computeVertexNormals();
+        pos.needsUpdate = true; // flatShading 이라 법선은 화면에서 계산된다. computeVertexNormals 는 필요 없다
         foam.position.z = -8 + Math.sin(t * 0.7) * 0.8;
         foam.material.opacity = 0.35 + Math.sin(t * 0.7) * 0.15;
         fire.intensity = night * (12 + Math.sin(t * 13) * 2);

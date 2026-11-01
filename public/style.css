@@ -82,3 +82,4 @@ dialog li button { all: unset; display: flex; justify-content: space-between; wi
   .hint { top: 70px; font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+[hidden] { display: none !important; }
