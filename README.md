@@ -90,7 +90,17 @@ test/
 
 ## 배포
 
-Node 20 이상이 돌아가는 곳이면 어디든 됩니다. WebSocket 을 지원하는 호스팅(Render, Railway, Fly.io 등)에 올리고 시작 명령을 `npm start` 로 둡니다.
+Node 20 이상이 돌아가는 곳이면 어디든 됩니다. WebSocket 을 지원하는 호스팅(Render, Railway, Fly.io 등)에 올리고 시작 명령을 `npm start` 로 둡니다. 서버는 호스팅이 넣어 주는 `PORT` 환경 변수를 그대로 읽어서 코드를 고칠 필요가 없습니다.
+
+Railway 예 ([Railway CLI](https://docs.railway.com/guides/cli) 로그인 후, 이 폴더에서):
+
+```bash
+railway init -n online-temple-starter   # 프로젝트 만들기
+railway up                              # 코드 올리기 (빌드는 npm install, 실행은 npm start)
+railway domain                          # https://….up.railway.app 주소 받기
+```
+
+받은 주소를 PC와 휴대폰에서 열면 같은 방에서 서로 보입니다. 서버를 켜 둔 시간만큼 요금이 나오니, 다 본 뒤에는 Railway 대시보드에서 서비스를 지우거나 멈춰 두세요. 동작 수(`data/stats.json`)는 재배포하면 지워지므로 오래 남기려면 볼륨을 붙이고 `STATS_FILE` 을 그 경로로 둡니다.
 
 | 환경 변수 | 기본값 | 뜻 |
 |---|---|---|
